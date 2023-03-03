@@ -33,10 +33,10 @@ function mouseDragged() {
     if (mouseButton == LEFT) {
       pixeldata[getMousePos()] = colorPicker.color();
     } else if (mouseButton == RIGHT) {
-      if (i % 2 == 0) {
-        pixeldata.push(color('#ffffff'));
+      if (getMousePos() % 2 == 0) {
+        pixeldata[getMousePos()] = color('#ffffff');
       } else {
-        pixeldata.push(color('#d9d9d9'))
+        pixeldata[getMousePos()] = color('#d9d9d9');
       }
     }
   }
@@ -48,10 +48,10 @@ function mousePressed() {
     if (mouseButton == LEFT) {
       pixeldata[getMousePos()] = colorPicker.color();
     } else if (mouseButton == RIGHT) {
-      if (i % 2 == 0) {
-        pixeldata.push(color('#ffffff'));
+      if (getMousePos() % 2 == 0) {
+        pixeldata[getMousePos()] = color('#ffffff');
       } else {
-        pixeldata.push(color('#d9d9d9'))
+        pixeldata[getMousePos()] = color('#d9d9d9');
       }
     }
   }
@@ -87,7 +87,7 @@ function getMousePos() {
 //square canvas cuz rectangular canvases are unsupported, also makes my life more easy
 function findOptimalCanvasSize() {
 	let maxSize = (windowWidth < windowHeight)? windowWidth : windowHeight;
-	maxSize -= 100;
+	maxSize -= 150;
 	for (i = maxSize; i > 0; i--) {
 	  if (i % gap == 0) {
 		return i;
@@ -98,6 +98,25 @@ function findOptimalCanvasSize() {
 //center ze canvas
 function centerCanvas() {
 	let x = (windowWidth - width) / 2;
-	let y = (windowHeight - height) / 2;
+	let y = 100;
 	cnv.position(x, y);
+}
+
+//Bresenham's line algorithm to fill in empty spaces
+function bresenham(x0, y0, x1, y1) {
+  let points = [];
+  let dx = x1 - x0;
+  let dy = y1 - y0;
+  let D = 2 * dy - dx;
+  let y = y0;
+
+  for (let x = x0; x < x1; x++) {
+    points.push([x, y]);
+    if (D > 0) {
+      y = y + 1;
+      D = D - 2 * dx;
+    }
+    D = D + 2 * dy;
+  }
+  return points;
 }

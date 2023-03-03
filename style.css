@@ -1,12 +1,33 @@
+@import "assets/fonts/stylesheet.css";
 html, body {
-    margin: 0;
-    padding: 0;
-    background-color: #2b2d42;
-  }
-  canvas {
-    display: block;
-  }
-  .centre-container{
-    display: flex;
-    justify-content: center;
-  }
+  margin: 0;
+  padding: 0;
+  background-color: #141518;
+}
+canvas {
+  display: block;
+}
+
+button {
+  background-color: #000000;
+  color: white;
+  text-decoration: none;
+  border: 2px solid #4287f5;
+  font-family: "JetbrainsMono Nerd Font";
+  transition-duration: 0.4s;
+}
+
+button:hover {
+  background-color: #4287f5;
+}
+
+.title {
+  font-family: 'JetBrainsMono Nerd Font';
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.centre-container {
+  display: flex;
+  justify-content: center;
+}
