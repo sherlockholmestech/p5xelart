@@ -1,19 +1,24 @@
-p5.disableFriendlyErrors = true;
-
 const gap = 20;
 
+let cnv;
 let mode;
 let cols, rows;
 let pixeldata = [];
 
 function setup() {
-  createCanvas(300, 300);
+  cnv = createCanvas(findOptimalCanvasSize(), findOptimalCanvasSize());
+  cnv.elt.addEventListener("contextmenu", (e) => e.preventDefault())
+  centerCanvas();
   colorPicker = createColorPicker('#ed225d');
   colorPicker.position(0, height + 5);
   cols = width / gap;
   rows = height / gap;
   for (let i = 0; i < (rows * cols); i++) {
-    pixeldata.push(color(255, 255, 255))
+    if (i % 2 == 0) {
+      pixeldata.push(color('#ffffff'));
+    } else {
+      pixeldata.push(color('#d9d9d9'))
+    }
   }
 }
 
@@ -22,28 +27,77 @@ function draw() {
   drawCanvas();
 }
 
-function getMousePos() {
-  let position = cols * Math.floor(mouseY / gap) + Math.floor(mouseX / gap);
-  return position;
-}
-
-function drawCanvas() {
-  strokeWeight(1);
-  let pos = 0;
-  for (let y = 0; y < height; y += gap) {
-    for (let x = 0; x < width; x += gap) {
-      fill(pixeldata[pos]);
-      rect(x, y, gap, gap);
-      pos += 1;
+//mousey shenanigans
+function mouseDragged() {
+  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    if (mouseButton == LEFT) {
+      pixeldata[getMousePos()] = colorPicker.color();
+    } else if (mouseButton == RIGHT) {
+      if (i % 2 == 0) {
+        pixeldata.push(color('#ffffff'));
+      } else {
+        pixeldata.push(color('#d9d9d9'))
+      }
     }
   }
 }
 
-function mouseDragged() {
-  pixeldata[getMousePos()] = colorPicker.color();
-}
-
+//more mousey shenanigans
 function mousePressed() {
-  pixeldata[getMousePos()] = colorPicker.color();
+  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    if (mouseButton == LEFT) {
+      pixeldata[getMousePos()] = colorPicker.color();
+    } else if (mouseButton == RIGHT) {
+      if (i % 2 == 0) {
+        pixeldata.push(color('#ffffff'));
+      } else {
+        pixeldata.push(color('#d9d9d9'))
+      }
+    }
+  }
 }
 
+/*
+  THE FOLLOWING FUNCTIONS ARE ALL DRAWING FUNCTIONS
+*/
+
+// main drawing part here
+function drawCanvas() {
+	strokeWeight(0);
+	let pos = 0;
+	for (let y = 0; y < height; y += gap) {
+	  for (let x = 0; x < width; x += gap) {
+		fill(pixeldata[pos]);
+		rect(x, y, gap, gap);
+		pos += 1;
+	  }
+	}
+}
+
+/*
+  THE FOLLOWING FUNCTIONS ARE ALL UTILITY FUNCTIONS
+*/
+
+// gets the position of the mouse and returns it as a index in the pixeldata array
+function getMousePos() {
+	let position = cols * Math.floor(mouseY / gap) + Math.floor(mouseX / gap);
+	return position;
+}
+
+//square canvas cuz rectangular canvases are unsupported, also makes my life more easy
+function findOptimalCanvasSize() {
+	let maxSize = (windowWidth < windowHeight)? windowWidth : windowHeight;
+	maxSize -= 100;
+	for (i = maxSize; i > 0; i--) {
+	  if (i % gap == 0) {
+		return i;
+	  }
+	}
+}
+  
+//center ze canvas
+function centerCanvas() {
+	let x = (windowWidth - width) / 2;
+	let y = (windowHeight - height) / 2;
+	cnv.position(x, y);
+}
