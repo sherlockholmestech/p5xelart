@@ -31,7 +31,17 @@ function draw() {
 function mouseDragged() {
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     if (mouseButton == LEFT) {
-      pixeldata[getMousePos()] = colorPicker.color();
+      let points;
+      if (pmouseX > mouseX) {
+        points = bresenham(mouseX, mouseY, pmouseX, pmouseY);
+      } else if (mouseX > pmouseX) {
+        points = bresenham(pmouseX, pmouseY, mouseX, mouseY);
+      } else {
+        points = [[mouseX, mouseY]];
+      }
+      for (let i = 0; i < points.length; i++) {
+        pixeldata[getMousePos(points[i][0], points[i][1])] = colorPicker.color();
+      }
     } else if (mouseButton == RIGHT) {
       if (getMousePos() % 2 == 0) {
         pixeldata[getMousePos()] = color('#ffffff');
@@ -46,7 +56,7 @@ function mouseDragged() {
 function mousePressed() {
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     if (mouseButton == LEFT) {
-      pixeldata[getMousePos()] = colorPicker.color();
+      pixeldata[getMousePos(mouseX, mouseY)] = colorPicker.color();
     } else if (mouseButton == RIGHT) {
       if (getMousePos() % 2 == 0) {
         pixeldata[getMousePos()] = color('#ffffff');
@@ -79,8 +89,8 @@ function drawCanvas() {
 */
 
 // gets the position of the mouse and returns it as a index in the pixeldata array
-function getMousePos() {
-	let position = cols * Math.floor(mouseY / gap) + Math.floor(mouseX / gap);
+function getMousePos(x, y) {
+	let position = cols * Math.floor(y / gap) + Math.floor(x / gap);
 	return position;
 }
 
