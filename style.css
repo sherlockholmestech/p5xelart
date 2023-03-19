@@ -31,3 +31,22 @@ button:hover {
   display: flex;
   justify-content: center;
 }
+
+.colorpicker {
+  background-color: #000000;
+  color: white;
+  text-decoration: none;
+  border: 2px solid #4287f5;
+  font-family: "JetbrainsMono Nerd Font";
+  transition-duration: 0.4s;
+}
+
+.option-button {
+  background-color: #000000;
+  color: white;
+  text-decoration: none;
+  border: 2px solid #4287f5;
+  font-family: "JetbrainsMono Nerd Font";
+  transition-duration: 0.4s;
+  padding: 5px;
+}

@@ -4,21 +4,27 @@ let cnv;
 let mode;
 let cols, rows;
 let pixeldata = [];
+let border = true;
 
 function setup() {
   cnv = createCanvas(findOptimalCanvasSize(), findOptimalCanvasSize());
   cnv.elt.addEventListener("contextmenu", (e) => e.preventDefault())
   centerCanvas();
+  borderswitch = createButton('Toggle Borders');
+  borderswitch.position(0, 0);
+  borderswitch.class('option-button');
+  borderswitch.mousePressed(toggleBorders);
   colorPicker = createColorPicker('#ed225d');
-  colorPicker.position(0, height + 5);
+  colorPicker.position(120, 0);
+  colorPicker.class('colorpicker');
+  saveImageButton = createButton('Save Image');
+  saveImageButton.position(183, 0);
+  saveImageButton.class('option-button');
+  saveImageButton.mousePressed(saveImage);
   cols = width / gap;
   rows = height / gap;
   for (let i = 0; i < (rows * cols); i++) {
-    if (i % 2 == 0) {
-      pixeldata.push(color('#ffffff'));
-    } else {
-      pixeldata.push(color('#d9d9d9'))
-    }
+    pixeldata.push(color('#ffffff'));
   }
 }
 
@@ -36,6 +42,12 @@ function mouseDragged() {
         points = bresenham(mouseX, mouseY, pmouseX, pmouseY);
       } else if (mouseX > pmouseX) {
         points = bresenham(pmouseX, pmouseY, mouseX, mouseY);
+      } else if (mouseY != pmouseY && mouseX == pmouseX) {
+        if (mouseY > pmouseY) {
+          points = verticalLine(mouseX, pmouseY, mouseY);
+        } else {
+          points = verticalLine(mouseX, mouseY, pmouseY);
+        }
       } else {
         points = [[mouseX, mouseY]];
       }
@@ -43,11 +55,7 @@ function mouseDragged() {
         pixeldata[getMousePos(points[i][0], points[i][1])] = colorPicker.color();
       }
     } else if (mouseButton == RIGHT) {
-      if (getMousePos() % 2 == 0) {
-        pixeldata[getMousePos()] = color('#ffffff');
-      } else {
-        pixeldata[getMousePos()] = color('#d9d9d9');
-      }
+      pixeldata[getMousePos(mouseX, mouseY)] = color('#ffffff');
     }
   }
 }
@@ -58,11 +66,7 @@ function mousePressed() {
     if (mouseButton == LEFT) {
       pixeldata[getMousePos(mouseX, mouseY)] = colorPicker.color();
     } else if (mouseButton == RIGHT) {
-      if (getMousePos() % 2 == 0) {
-        pixeldata[getMousePos()] = color('#ffffff');
-      } else {
-        pixeldata[getMousePos()] = color('#d9d9d9');
-      }
+      pixeldata[getMousePos(mouseX, mouseY)] = color('#ffffff');
     }
   }
 }
@@ -73,7 +77,11 @@ function mousePressed() {
 
 // main drawing part here
 function drawCanvas() {
-	strokeWeight(0);
+	if (border) {
+    strokeWeight(1);
+  } else {
+    strokeWeight(0);
+  };
 	let pos = 0;
 	for (let y = 0; y < height; y += gap) {
 	  for (let x = 0; x < width; x += gap) {
@@ -129,4 +137,20 @@ function bresenham(x0, y0, x1, y1) {
     D = D + 2 * dy;
   }
   return points;
+}
+
+function verticalLine(x, y0, y1) {
+  let points = [];
+  for (let y = y0; y < y1; y++) {
+    points.push([x, y]);
+  }
+  return points;
+}
+
+function toggleBorders() {
+  border = !border;
+}
+
+function saveImage() {
+  saveCanvas(cnv, 'image', 'png');
 }
